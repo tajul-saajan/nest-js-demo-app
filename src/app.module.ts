@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database.module';
 import { DataSource } from 'typeorm';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { DataSource } from 'typeorm';
     DatabaseModule,
     AuthModule,
     BookmarkModule,
+    UserModule,
   ],
 })
 export class AppModule {
