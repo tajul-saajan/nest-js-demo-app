@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import Bookmark from './bookmark.entity';
-import { CreateBookmarkDto } from '../dto/create-bookmark-dto';
+import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
