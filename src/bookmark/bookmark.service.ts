@@ -3,6 +3,7 @@ import { Repository } from 'typeorm';
 import Bookmark from './bookmark.entity';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class BookmarkService {
@@ -11,7 +12,7 @@ export class BookmarkService {
     private readonly repository: Repository<Bookmark>,
   ) {}
 
-  async findAll(title?: string, desc?: string) {
+  async findAll(title?: string, desc?: string, page = 1, limit = 2) {
     const query = this.repository.createQueryBuilder('bookmark');
 
     if (title) {
@@ -22,7 +23,11 @@ export class BookmarkService {
         desc: `%${desc}%`,
       });
     }
-    return await query.getMany();
+    return await paginate<Bookmark>(query, {
+      page,
+      route: 'http://cats.com/cats',
+      limit,
+    } as IPaginationOptions);
   }
 
   async create(dto: CreateBookmarkDto) {

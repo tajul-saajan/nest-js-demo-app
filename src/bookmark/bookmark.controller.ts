@@ -11,12 +11,19 @@ import {
 import { BookmarkService } from './bookmark.service';
 import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
+
 @Controller('bookmarks')
 export class BookmarkController {
   constructor(private readonly service: BookmarkService) {}
+
   @Get('/')
-  async index(@Query('title') title: string, @Query('desc') desc: string) {
-    return await this.service.findAll(title, desc);
+  async index(
+    @Query('title') title: string,
+    @Query('desc') desc: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+  ) {
+    return await this.service.findAll(title, desc, page, limit);
   }
 
   @Post('/')
