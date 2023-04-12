@@ -23,11 +23,14 @@ export class BookmarkService {
         desc: `%${desc}%`,
       });
     }
-    return await paginate<Bookmark>(query, {
-      page,
-      route: 'http://cats.com/cats',
-      limit,
-    } as IPaginationOptions);
+    return await paginate<Bookmark>(
+      query.setFindOptions({ relations: { user: true } }),
+      {
+        page,
+        route: 'http://cats.com/cats',
+        limit,
+      } as IPaginationOptions,
+    );
   }
 
   async create(dto: CreateBookmarkDto) {

@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import User from '../user/user.entity';
 
 @Entity()
 class Bookmark {
@@ -25,6 +27,9 @@ class Bookmark {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @ManyToOne(() => User, (user) => user.bookmarks)
+  user: User;
 }
 
 export default Bookmark;

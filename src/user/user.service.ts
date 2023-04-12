@@ -12,6 +12,10 @@ export class UserService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  async findAll() {
+    return await this.userRepository.find({ relations: { bookmarks: true } });
+  }
+
   async signUp(dto: CreateUserDto) {
     // return dto;
     const user = new User();
