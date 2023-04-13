@@ -1,18 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import Bookmark from './bookmark.entity';
-import { CreateBookmarkDto } from '../dto/create-bookmark-dto';
+import { CreateBookmarkDto } from './dto/create-bookmark.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class BookmarkService {
   constructor(
     @InjectRepository(Bookmark)
-    private readonly bookmarkRepository: Repository<Bookmark>,
+    private readonly repository: Repository<Bookmark>,
   ) {}
 
-  async findAll() {
-    return await this.bookmarkRepository.find();
+  async findAll(title?: string, desc?: string, page = 1, limit = 2) {
+    const query = this.repository.createQueryBuilder('bookmark');
+
+    if (title) {
+      await query.where('bookmark.title = :title', { title: title });
+    }
+    if (desc) {
+      await query.where('bookmark.description like :desc', {
+        desc: `%${desc}%`,
+      });
+    }
+    return await paginate<Bookmark>(
+      query.setFindOptions({ relations: { user: true } }),
+      {
+        page,
+        route: 'http://cats.com/cats',
+        limit,
+      } as IPaginationOptions,
+    );
   }
 
   async create(dto: CreateBookmarkDto) {
@@ -20,6 +38,28 @@ export class BookmarkService {
     bookmark.title = dto.title;
     bookmark.description = dto.description;
     bookmark.link = dto.link;
-    return await this.bookmarkRepository.save(bookmark);
+    return await this.repository.save(bookmark);
+  }
+
+  async show(id: number) {
+    const bookmark = await this.repository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!bookmark) throw new BadRequestException({ error: 'Data Not Found' });
+    return bookmark;
+  }
+
+  async update(id: number, dto: CreateBookmarkDto) {
+    const bookmark = await this.show(id);
+    await this.repository.update(id, dto);
+    return this.repository.preload(bookmark);
+  }
+
+  async destroy(id: number) {
+    await this.show(id);
+    return await this.repository.delete(id);
   }
 }

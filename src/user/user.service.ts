@@ -1,9 +1,9 @@
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import User from '../auth/user.entity';
+import User from './user.entity';
 import { Repository } from 'typeorm';
-import { UserSignInDto } from '../dto/user-signin-dto';
-import { CreateUserDto } from '../dto/create-user-dto';
+import { UserSigninDto } from './dto/user-signin.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable({})
 export class UserService {
@@ -11,6 +11,10 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
+
+  async findAll() {
+    return await this.userRepository.find({ relations: { bookmarks: true } });
+  }
 
   async signUp(dto: CreateUserDto) {
     // return dto;
@@ -21,7 +25,7 @@ export class UserService {
     return await this.userRepository.save(user);
   }
 
-  async signIn(dto: UserSignInDto) {
+  async signIn(dto: UserSigninDto) {
     const user = await this.userRepository.findOne({
       where: { email: dto.email },
     });

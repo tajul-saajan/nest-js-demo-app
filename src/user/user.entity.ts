@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import Bookmark from '../bookmark/bookmark.entity';
 
 @Entity()
 class User {
@@ -13,6 +14,9 @@ class User {
 
   @Column()
   public full_name: string;
+
+  @OneToMany(() => Bookmark, (bookmark) => bookmark.user)
+  bookmarks: Bookmark[];
 }
 
 export default User;

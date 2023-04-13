@@ -6,6 +6,8 @@ import * as Joi from '@hapi/joi';
 import { DatabaseModule } from './database.module';
 import { DataSource } from 'typeorm';
 import { UserModule } from './user/user.module';
+import { PostModule } from './post/post.module';
+import { TagModule } from './tag/tag.module';
 
 @Module({
   imports: [
@@ -23,6 +25,8 @@ import { UserModule } from './user/user.module';
     AuthModule,
     BookmarkModule,
     UserModule,
+    PostModule,
+    TagModule,
   ],
 })
 export class AppModule {
